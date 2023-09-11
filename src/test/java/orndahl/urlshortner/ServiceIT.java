@@ -1,6 +1,12 @@
 package orndahl.urlshortner;
 
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.test.context.TestConfiguration;
 
-@SpringBootTest
-public class ServiceIT {}
+@TestConfiguration(proxyBeanMethods = false)
+public class ServiceIT {
+
+  public static void main(String[] args) {
+    SpringApplication.from(Application::main).with(ServiceIT.class).run(args);
+  }
+}
