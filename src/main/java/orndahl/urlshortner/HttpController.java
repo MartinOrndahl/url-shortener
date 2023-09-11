@@ -20,7 +20,7 @@ public class HttpController {
   @RequestMapping(method = RequestMethod.POST, path = "/create")
   public String createUrl(@RequestParam final String url) {
     String shortenedUrl = DigestUtils.sha256Hex(url);
-    Url urlModel = Url.builder().original(url).shortened(shortenedUrl).build();
+    UrlModel urlModel = UrlModel.builder().original(url).shortened(shortenedUrl).build();
     urlRepository.save(urlModel);
 
     return shortenedUrl;

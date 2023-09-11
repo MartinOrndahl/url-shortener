@@ -7,8 +7,6 @@ import org.springframework.boot.test.context.TestConfiguration;
 public class TestUrlShortnerApplication {
 
   public static void main(String[] args) {
-    SpringApplication.from(UrlShortnerApplication::main)
-        .with(TestUrlShortnerApplication.class)
-        .run(args);
+    SpringApplication.from(Application::main).with(TestUrlShortnerApplication.class).run(args);
   }
 }

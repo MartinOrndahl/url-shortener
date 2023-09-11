@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  app:
+    image: 'morndahl/url-shortener:latest'
+    networks:
+      - internal_net
+    ports:
+      - "5990:8080"
+    build:
+      context: .
+    container_name: app
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db_alias:5432/postgres?ssl=false
+      - SPRING_DATASOURCE_USERNAME=username
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_LIQUIBASE_CHANGE_LOG=classpath:db/changelog/changelog.yaml
+
+  db:
+    image: 'postgres:15.0-alpine'
+    networks:
+      internal_net:
+        aliases:
+          - db_alias
+    container_name: db
+    environment:
+      - POSTGRES_USER=username
+      - POSTGRES_PASSWORD=password
+
+networks:
+  internal_net:
