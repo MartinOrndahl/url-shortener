@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UrlRepository extends JpaRepository<Url, Long> {
-    Url findByShortened(String shortened);
+  Url findByShortened(String shortened);
 }

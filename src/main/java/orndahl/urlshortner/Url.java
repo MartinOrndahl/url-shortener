@@ -1,6 +1,5 @@
 package orndahl.urlshortner;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -17,8 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Url {
 
-  @Id
-  String shortened;
+  @Id String shortened;
 
   String original;
 }
