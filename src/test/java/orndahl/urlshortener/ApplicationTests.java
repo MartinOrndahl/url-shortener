@@ -1,5 +1,7 @@
 package orndahl.urlshortener;
 
+import lombok.SneakyThrows;
+import org.json.JSONObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -40,29 +42,31 @@ class ApplicationTests {
 
   TestRestTemplate restTemplate = new TestRestTemplate();
 
+  @SneakyThrows
   @Test
   @DisplayName("Ensure a URL is shortened, stored, and retrieved")
   void serviceTest() {
     HttpEntity<String> entity = new HttpEntity<>(null, new HttpHeaders());
 
-    String originalUrl = "google.com";
+    String originalUrl = "https://www.google.com/";
 
-    ResponseEntity<Object> createResponse =
+    ResponseEntity<?> createResponse =
         restTemplate.exchange(
             "http://localhost:8080/create?url=%s".formatted(originalUrl),
-            HttpMethod.POST,
-            entity,
-            Object.class);
-
-    Object createResponseString = createResponse.getBody();
-
-    ResponseEntity<Object> lookupResponse =
-        restTemplate.exchange(
-            "http://localhost:8080/lookup?url=%s".formatted(createResponseString),
             HttpMethod.GET,
             entity,
             Object.class);
 
-    assert originalUrl.equals(lookupResponse.getBody());
+    JSONObject jsonObject = new JSONObject(createResponse.getBody().toString());
+    String createResponseUrl = (String) jsonObject.get("shortenedUrl");
+
+    ResponseEntity<?> lookupResponse =
+        restTemplate.exchange(
+            "http://localhost:8080/lookup?url=%s".formatted(createResponseUrl),
+            HttpMethod.GET,
+            entity,
+            Object.class);
+
+    assert originalUrl.equalsIgnoreCase(lookupResponse.getHeaders().getLocation().toString());
   }
 }
