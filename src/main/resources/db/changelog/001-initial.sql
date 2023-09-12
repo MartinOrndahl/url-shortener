@@ -1,8 +1,8 @@
 CREATE TABLE url
 (
     id        uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-    original  TEXT NOT NULL,
-    shortened TEXT NOT NULL,
+    original  TEXT     NOT NULL,
+    shortened CHAR(40) NOT NULL,
     CONSTRAINT unique_url UNIQUE (original, shortened)
 );
 

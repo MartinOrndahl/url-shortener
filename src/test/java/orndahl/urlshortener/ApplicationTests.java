@@ -1,5 +1,7 @@
 package orndahl.urlshortener;
 
+import lombok.SneakyThrows;
+import org.json.JSONObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,11 +20,11 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @SpringBootTest(
     classes = Application.class,
     webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-class UrlModelshortenerApplicationTests {
+class ApplicationTests {
 
   public static final String DB_USERNAME = "username";
   public static final String DB_PASSWORD = "password";
-  
+
   @Container
   static PostgreSQLContainer<?> postgres =
       new PostgreSQLContainer("postgres:15.0")
@@ -40,29 +42,31 @@ class UrlModelshortenerApplicationTests {
 
   TestRestTemplate restTemplate = new TestRestTemplate();
 
+  @SneakyThrows
   @Test
   @DisplayName("Ensure a URL is shortened, stored, and retrieved")
   void serviceTest() {
     HttpEntity<String> entity = new HttpEntity<>(null, new HttpHeaders());
 
-    String originalUrl = "google.com";
+    String originalUrl = "https://www.google.com/";
 
-    ResponseEntity<String> createResponse =
+    ResponseEntity<?> createResponse =
         restTemplate.exchange(
             "http://localhost:8080/create?url=%s".formatted(originalUrl),
-            HttpMethod.POST,
-            entity,
-            String.class);
-
-    String createResponseString = createResponse.getBody();
-
-    ResponseEntity<String> lookupResponse =
-        restTemplate.exchange(
-            "http://localhost:8080/lookup?url=%s".formatted(createResponseString),
             HttpMethod.GET,
             entity,
-            String.class);
+            Object.class);
 
-    assert originalUrl.equals(lookupResponse.getBody());
+    JSONObject jsonObject = new JSONObject(createResponse.getBody().toString());
+    String createResponseUrl = (String) jsonObject.get("shortenedUrl");
+
+    ResponseEntity<?> lookupResponse =
+        restTemplate.exchange(
+            "http://localhost:8080/lookup?url=%s".formatted(createResponseUrl),
+            HttpMethod.GET,
+            entity,
+            Object.class);
+
+    assert originalUrl.equalsIgnoreCase(lookupResponse.getHeaders().getLocation().toString());
   }
 }
