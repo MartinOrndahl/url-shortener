@@ -1,9 +1,10 @@
 package orndahl.urlshortener;
 
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DatabaseRepository extends JpaRepository<UrlModel, Long> {
-  UrlModel findByShortened(String shortened);
+  Optional<UrlModel> findByShortened(String shortened);
 }

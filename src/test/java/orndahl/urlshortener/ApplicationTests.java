@@ -18,11 +18,11 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @SpringBootTest(
     classes = Application.class,
     webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-class UrlModelshortenerApplicationTests {
+class ApplicationTests {
 
   public static final String DB_USERNAME = "username";
   public static final String DB_PASSWORD = "password";
-  
+
   @Container
   static PostgreSQLContainer<?> postgres =
       new PostgreSQLContainer("postgres:15.0")
@@ -47,21 +47,21 @@ class UrlModelshortenerApplicationTests {
 
     String originalUrl = "google.com";
 
-    ResponseEntity<String> createResponse =
+    ResponseEntity<Object> createResponse =
         restTemplate.exchange(
             "http://localhost:8080/create?url=%s".formatted(originalUrl),
             HttpMethod.POST,
             entity,
-            String.class);
+            Object.class);
 
-    String createResponseString = createResponse.getBody();
+    Object createResponseString = createResponse.getBody();
 
-    ResponseEntity<String> lookupResponse =
+    ResponseEntity<Object> lookupResponse =
         restTemplate.exchange(
             "http://localhost:8080/lookup?url=%s".formatted(createResponseString),
             HttpMethod.GET,
             entity,
-            String.class);
+            Object.class);
 
     assert originalUrl.equals(lookupResponse.getBody());
   }
