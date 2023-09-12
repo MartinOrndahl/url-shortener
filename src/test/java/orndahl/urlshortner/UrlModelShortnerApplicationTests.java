@@ -14,7 +14,9 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
-@SpringBootTest(classes = Application.class)
+@SpringBootTest(
+    classes = Application.class,
+    webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class UrlModelShortnerApplicationTests {
 
   @Container
@@ -38,10 +40,24 @@ class UrlModelShortnerApplicationTests {
   void test() {
     HttpEntity<String> entity = new HttpEntity<>(null, new HttpHeaders());
 
-    ResponseEntity<String> response =
-        restTemplate.exchange(
-            "http://localhost:8080/create?url=google.com", HttpMethod.POST, entity, String.class);
+    String originalUrl = "google.com";
 
-    assert response.equals("");
+    ResponseEntity<String> createResponse =
+        restTemplate.exchange(
+            "http://localhost:8080/create?url=%s".formatted(originalUrl),
+            HttpMethod.POST,
+            entity,
+            String.class);
+
+    String createResponseString = createResponse.getBody();
+
+    ResponseEntity<String> lookupResponse =
+        restTemplate.exchange(
+            "http://localhost:8080/lookup?url=%s".formatted(createResponseString),
+            HttpMethod.GET,
+            entity,
+            String.class);
+
+    assert originalUrl.equals(lookupResponse.getBody());
   }
 }
