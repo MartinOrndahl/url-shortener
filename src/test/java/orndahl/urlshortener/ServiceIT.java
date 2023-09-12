@@ -1,4 +1,4 @@
-package orndahl.urlshortner;
+package orndahl.urlshortener;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.TestConfiguration;

@@ -1,4 +1,4 @@
-package orndahl.urlshortner;
+package orndahl.urlshortener;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

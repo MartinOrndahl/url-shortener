@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>orndahl</groupId>
-    <artifactId>url-shortner</artifactId>
+    <artifactId>url-shortener</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>url-shortner</name>
-    <description>A, for fun, url shortner</description>
+    <name>url-shortener</name>
+    <description>A, for fun, url shortener</description>
     <properties>
         <java.version>17</java.version>
     </properties>

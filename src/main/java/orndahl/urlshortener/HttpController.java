@@ -1,4 +1,4 @@
-package orndahl.urlshortner;
+package orndahl.urlshortener;
 
 import lombok.SneakyThrows;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -10,24 +10,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HttpController {
 
-  private final UrlRepository urlRepository;
+  private final DatabaseRepository databaseRepository;
 
   @SneakyThrows
-  public HttpController(UrlRepository urlRepository) {
-    this.urlRepository = urlRepository;
+  public HttpController(DatabaseRepository databaseRepository) {
+    this.databaseRepository = databaseRepository;
   }
 
   @RequestMapping(method = RequestMethod.POST, path = "/create")
   public String createUrl(@RequestParam final String url) {
     String shortenedUrl = DigestUtils.sha256Hex(url);
     UrlModel urlModel = UrlModel.builder().original(url).shortened(shortenedUrl).build();
-    urlRepository.save(urlModel);
+    databaseRepository.save(urlModel);
 
     return shortenedUrl;
   }
 
   @RequestMapping(method = RequestMethod.GET, path = "/lookup")
   public String lookupUrl(@RequestParam final String url) {
-    return urlRepository.findByShortened(url).original;
+    return databaseRepository.findByShortened(url).original;
   }
 }

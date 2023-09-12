@@ -1,5 +1,6 @@
-package orndahl.urlshortner;
+package orndahl.urlshortener;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -17,14 +18,17 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @SpringBootTest(
     classes = Application.class,
     webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-class UrlModelShortnerApplicationTests {
+class UrlModelshortenerApplicationTests {
 
+  public static final String DB_USERNAME = "username";
+  public static final String DB_PASSWORD = "password";
+  
   @Container
   static PostgreSQLContainer<?> postgres =
       new PostgreSQLContainer("postgres:15.0")
           .withDatabaseName("postgres")
-          .withUsername("username")
-          .withPassword("password");
+          .withUsername(DB_USERNAME)
+          .withPassword(DB_PASSWORD);
 
   @DynamicPropertySource
   static void configureProperties(DynamicPropertyRegistry registry) {
@@ -37,7 +41,8 @@ class UrlModelShortnerApplicationTests {
   TestRestTemplate restTemplate = new TestRestTemplate();
 
   @Test
-  void test() {
+  @DisplayName("Ensure a URL is shortened, stored, and retrieved")
+  void serviceTest() {
     HttpEntity<String> entity = new HttpEntity<>(null, new HttpHeaders());
 
     String originalUrl = "google.com";
