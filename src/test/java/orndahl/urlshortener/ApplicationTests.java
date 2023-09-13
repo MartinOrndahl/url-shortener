@@ -1,11 +1,12 @@
 package orndahl.urlshortener;
 
+import java.util.Map;
 import lombok.SneakyThrows;
-import org.json.JSONObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -50,23 +51,20 @@ class ApplicationTests {
 
     String originalUrl = "https://www.google.com/";
 
-    ResponseEntity<?> createResponse =
+    ResponseEntity<Map<String, String>> createResponse =
         restTemplate.exchange(
-            "http://localhost:8080/create?url=%s".formatted(originalUrl),
-            HttpMethod.GET,
+            "http://localhost:8080/links?url=%s".formatted(originalUrl),
+            HttpMethod.POST,
             entity,
-            Object.class);
+            new ParameterizedTypeReference<>() {});
 
-    JSONObject jsonObject = new JSONObject(createResponse.getBody().toString());
-    String createResponseUrl = (String) jsonObject.get("shortenedUrl");
+    Map<String, String> bodyMap = createResponse.getBody();
+    String id = bodyMap.get("linkId");
 
     ResponseEntity<?> lookupResponse =
         restTemplate.exchange(
-            "http://localhost:8080/lookup?url=%s".formatted(createResponseUrl),
-            HttpMethod.GET,
-            entity,
-            Object.class);
+            "http://localhost:8080/links/%s".formatted(id), HttpMethod.GET, entity, Object.class);
 
-    assert originalUrl.equalsIgnoreCase(lookupResponse.getHeaders().getLocation().toString());
+    assert originalUrl.equalsIgnoreCase(String.valueOf(lookupResponse.getHeaders().getLocation()));
   }
 }
