@@ -6,7 +6,7 @@ services:
     networks:
       - internal_net
     ports:
-      - "5990:8080"
+      - "8080:8080"
     build:
       context: .
     container_name: app
