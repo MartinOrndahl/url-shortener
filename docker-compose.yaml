@@ -11,20 +11,20 @@ services:
       context: .
     container_name: app
     depends_on:
-      - db
+      - url_db
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db_alias:5432/postgres?ssl=false
       - SPRING_DATASOURCE_USERNAME=username
       - SPRING_DATASOURCE_PASSWORD=password
       - SPRING_LIQUIBASE_CHANGE_LOG=classpath:db/changelog/changelog.yaml
 
-  db:
+  url_db:
     image: 'postgres:15.0-alpine'
     networks:
       internal_net:
         aliases:
           - db_alias
-    container_name: db
+    container_name: url_db
     environment:
       - POSTGRES_USER=username
       - POSTGRES_PASSWORD=password

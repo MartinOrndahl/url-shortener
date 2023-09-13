@@ -50,8 +50,7 @@ public class HttpController {
 
   @Async
   @RequestMapping(method = RequestMethod.GET, path = "/links/{id}")
-  public CompletableFuture<ResponseEntity<Map<String, String>>> lookupUrl(
-      @PathVariable("id") final String id) {
+  public CompletableFuture<ResponseEntity<?>> lookupUrl(@PathVariable("id") final String id) {
 
     final Optional<UrlModel> urlModel;
     try {
